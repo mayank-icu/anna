@@ -159,7 +159,7 @@ function showRedirectMessage() {
 
 // Function to redirect to a new page
 function redirectToNewPage() {
-  window.location.href = 'https://example.com'; // Replace with your desired URL
+  window.location.href = 'aymjil.netlify.app/letters/v3.html'; // Replace with your desired URL
 }
 
 // Initial particle generation

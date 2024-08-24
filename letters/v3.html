@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letter</title>
+    <title>Letter For You</title>
     <style>
         body, html {
             height: 100%;
@@ -81,31 +81,49 @@
             margin: 10px 0;
             background-color: rgb(255, 255, 255);
             border: none;
-            color: white;
+            color: black; /* Changed text color to black */
             box-sizing: border-box;
             border-radius: 5px;
         }
     </style>
+    
 </head>
 <body>
     <div class="letter">
         <p>Dear Zil,</p>
-        <p>This is a sweet letter filled with kind words and warm thoughts. I hope it brightens your day!</p>
+        <p>I hope this letter brings a smile to your face and fills your heart with warmth. I’m sending you lots of kind thoughts and happy wishes. You deserve all the joy in the world, and I hope this little note makes your day just a bit brighter.</p>
         <p class="signature">Your Secret Admirer</p>
         <button onclick="openModal()">Reply</button>
     </div>
 
     <div id="replyModal" class="modal">
         <div class="modal-content">
-            <form action="">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <input type="text" placeholder="Your name">
-            <textarea placeholder="Your message" rows="4"></textarea>
-            <button onclick="closeModal()">Send</button>
-        </form>
+            <form id="wishForm">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <input type="text" placeholder="Your wish" name="wish" required>
+                <textarea placeholder="Your message" rows="4" name="message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+            <p id="confirmationMessage" style="display:none; color: green; margin-top: 10px;">
+                Your wish has been sent successfully!
+            </p>
         </div>
     </div>
-
+    
+    <div id="replyModal" class="modal">
+        <div class="modal-content">
+            <form id="wishForm">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <input type="text" placeholder="Your wish" name="wish" required>
+                <textarea placeholder="Your message" rows="4" name="message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+            <p id="confirmationMessage" style="display:none; color: green; margin-top: 10px;">
+                Your wish has been sent successfully!
+            </p>
+        </div>
+    </div>
+    
     <script>
         function openModal() {
             document.getElementById("replyModal").style.display = "block";
@@ -113,6 +131,35 @@
         function closeModal() {
             document.getElementById("replyModal").style.display = "none";
         }
+        
+        document.getElementById("wishForm").addEventListener("submit", function(event){
+            event.preventDefault(); // Prevent the default form submission
+            
+            const formData = new FormData(event.target); // Create a FormData object from the form
+    
+            // Send the form data using fetch
+            fetch("https://formspree.io/f/mjvqobge", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json"
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // Show confirmation message
+                    document.getElementById("confirmationMessage").style.display = "block";
+                    
+                    // Hide the form after submission
+                    document.getElementById("wishForm").style.display = "none";
+                } else {
+                    alert("There was a problem submitting your form.");
+                }
+            }).catch(error => {
+                alert("There was an error submitting your form: " + error.message);
+            });
+        });
     </script>
+    
+    
 </body>
 </html>
