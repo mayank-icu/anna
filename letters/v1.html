@@ -231,7 +231,7 @@ button {
         </div>
     </div>
 
-    <audio id="background-audio" src="../assets/audios/end-of-beginning.mp3" loop></audio>
+    <audio id="background-audio" src="../assets/audios/greedy.mp3" loop></audio>
     <div class="controls" id="controls">
         <p>Click to enable audio</p>
         <button onclick="enableAudio()">Play Audio</button>
@@ -397,21 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (feedbackLink) {
         feedbackLink.addEventListener('click', openPopup);
     }
-
-    // Add event listener to the close button in the popup
-    const closeButton = document.querySelector('#feedback-popup .close');
-    if (closeButton) {
-        closeButton.addEventListener('click', closePopup);
-    }
-
-    // Add event listener to the submit button in the popup
-    const submitButton = document.querySelector('#feedback-popup button');
-    if (submitButton) {
-        submitButton.addEventListener('click', submitFeedback);
-    }
-
-    // Type the text with realistic features
-    const text = "Hi Jil, It was nice meeting you today! I hope you're doing well. I just wanted to drop you a quick note to ask how you're doing. It was fun chatting in the comments earlier.I'm curious about how your day went. Anything interesting happen? I'm still getting used to this website, so it's great to connect with someone like you.By the way, I hope you have a wonderful night! Looking forward to hearing from you. Take care, Mayank 🇮🇳";
+"Dear Nastia, I hope you're doing well! I wanted to take a moment to say how amazing it’s been getting to know you through our conversations on Instagram. You have such a warm and friendly vibe, and it’s been a real pleasure talking to you. I also made this website just for you as a little surprise, hoping it will bring a smile to your face. Sometimes words can’t capture everything I want to say, so I thought this would be a special way to share my thoughts with you. Sending good vibes from here, and I hope this letter brings a little happiness to your day! Take care, and I’ll be here, looking forward to hearing from you. Warmly, Mayank";
     const typedTextElement = document.getElementById('typed-text');
     if (typedTextElement) {
         typeText(text, typedTextElement);
