@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>A Letter For You : &#8835;</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../assets/css/letterv2.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+  <style>
+   .reply-button-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .reply-button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .reply-button:hover {
+        background-color: #45a049;
+    }
+
+    .reply-form-popup {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        padding-top: 60px;
+    }
+
+    .reply-form-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 20px;
+        position: relative;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.3s;
+    }
+
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .reply-form-content h2 {
+        margin-top: 0;
+    }
+
+    .reply-form-content label {
+        display: block;
+        margin: 10px 0 5px;
+    }
+
+    .reply-form-content input[type="text"],
+    .reply-form-content input[type="email"],
+    .reply-form-content textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .reply-form-content button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .reply-form-content button[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    @keyframes slideIn {
+        from {transform: translateY(-50px); opacity: 0;}
+        to {transform: translateY(0); opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  
+<div class='container'>
+  <div class='envelope-wrapper'>
+    <div class='envelope'>
+      <div class='letter'>
+        <div class='text'>
+          <span>Hi Hanie,</span>
+          <p>
+            Thank you for your kind words! I'm glad we met, and I hope we can be good friends too.
+
+            Wishing you a good night and rest well. I hope to visit the Philippines someday!
+            
+            Sending you a tight hug back 
+            
+           
+          </p>
+          <p class='sincerely' style="margin-right: 30px;">
+            Best regards, <br>
+            Mayank &lt;3
+          
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class='heart'></div>
+        <!-- Reply Button -->
+<div class="reply-button-container">
+  <button class="reply-button" onclick="openReplyForm()">Reply</button>
+</div>
+  </div>
+  
+</div>
+
+</div>
+
+
+
+<!-- Reply Form Popup -->
+<div id="replyFormPopup" class="reply-form-popup">
+    <div class="reply-form-content">
+        <span class="close" onclick="closeReplyForm()">&times;</span>
+        <h2>Reply</h2>
+        <form action="https://formspree.io/f/mjvqobge" method="POST" onsubmit="showConfirmation(event)">
+            <label for="message">Your Message:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+            <button type="submit">Send</button>
+        </form>
+        <p id="confirmationMessage" style="display:none;">Your message has been sent.</p>
+    </div>
+</div>
+
+<!-- JavaScript for Reply Form -->
+ 
+<script>
+  function openReplyForm() {
+      document.getElementById('replyFormPopup').style.display = 'block';
+  }
+
+  function closeReplyForm() {
+      document.getElementById('replyFormPopup').style.display = 'none';
+  }
+
+  document.getElementById('replyForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from submitting the traditional way
+      var form = event.target;
+      var formData = new FormData(form);
+
+      fetch('https://formspree.io/f/mjvqobge', {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'Accept': 'application/json'
+          }
+      }).then(function(response) {
+          if (response.ok) {
+              document.getElementById('confirmationMessage').textContent = 'Your message has been sent.';
+          } else {
+              document.getElementById('confirmationMessage').textContent = 'There was a problem sending your message. Please try again.';
+          }
+          document.getElementById('confirmationMessage').style.display = 'block';
+          form.style.display = 'none';
+      }).catch(function(error) {
+          document.getElementById('confirmationMessage').textContent = 'There was an error sending your message. Please try again.';
+          document.getElementById('confirmationMessage').style.display = 'block';
+      });
+  });
+</script>
+
+<!-- partial -->
+  <script  src="../assets/js/letterv2.js"></script>
+
+</body>
+</html>
