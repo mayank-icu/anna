@@ -15,7 +15,7 @@ body, html {
 
 .background-image {
     background-image: url('../assets/images/page.jpg'); /* Add your background image path here */
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     height: 100%;
     display: flex;
@@ -23,39 +23,13 @@ body, html {
     align-items: center;
 }
 
-.letter {
-   
-    padding: 40px;
-    border-radius: 10px;
-    max-width: 80%;
-    position: relative;
-}
-
-.header {
-    text-align: right;
-    margin-bottom: 20px;
-}
 
 .date {
     font-size: 14px;
+    text-align: top;
 }
 
-.content {
-    text-align: justify;
-}
 
-h1 {
-    font-size: 2em;
-    margin-bottom: 20px;
-}
-
-.typing-animation::after {
-    content: '|';
-    animation: blink-caret 0.75s infinite;
-    position: relative;
-    top: -0.1em;
-    margin-left: 0.1em;
-}
 
 .popup {
     display: none;
@@ -220,15 +194,7 @@ button {
   
 
     <div class="background-image">
-        <div class="letter">
-            <div class="header">
                 <span class="date" class="date-container" id="date-container"></span>
-            </div>
-            <div class="content">
-                
-                <p id="typed-text" class="typing-animation"></p>
-            </div>
-        </div>
     </div>
 
     <audio id="background-audio" src="../assets/audios/greedy.mp3" loop></audio>
@@ -323,75 +289,6 @@ const audio = document.getElementById('background-audio');
                 controls.style.display = 'block'; // Show the controls if autoplay is prevented
             });
         });
-
-// Function to type text with realistic features
-function typeText(text, element) {
-    let index = 0;
-
-    function type() {
-        if (index < text.length) {
-            const char = text.charAt(index);
-            element.innerHTML += char;
-            if (char === '<') {
-                const endIndex = text.indexOf('>', index);
-                index = endIndex + 1;
-            } else {
-                index++;
-            }
-            setTimeout(type, getTypingSpeed(char)); // Adjust typing speed here (in milliseconds)
-        }
-    }
-
-    function getTypingSpeed(char) {
-        const typingSpeed = Math.random() * 50 + 25; // Random typing speed between 25ms and 75ms
-        if (char === ' ') {
-            return typingSpeed * 0.5; // Double speed for spaces
-        } else if (char === ',') {
-            return typingSpeed * 2; // Slower speed for commas
-        } else if (char === '.') {
-            return typingSpeed * 3; // Even slower speed for periods
-        } else if (char === '<') {
-            return 0; // No delay for opening tags
-        } else {
-            return typingSpeed;
-        }
-    }
-
-    // Start typing animation
-    type();
-}
-
-// Function to open the feedback popup
-function openPopup() {
-    const popup = document.getElementById('feedback-popup');
-    if (popup) {
-        popup.style.display = 'flex';
-    }
-}
-
-// Function to close the feedback popup
-function closePopup() {
-    const popup = document.getElementById('feedback-popup');
-    if (popup) {
-        popup.style.display = 'none';
-    }
-}
-
-// Function to handle feedback submission
-function submitFeedback() {
-    const feedbackTextarea = document.getElementById('feedback-textarea');
-    if (feedbackTextarea) {
-        const feedback = feedbackTextarea.value;
-        // Handle feedback submission (e.g., send to server, store locally, etc.)
-        console.log("Feedback submitted:", feedback);
-        // Close the popup after submission
-        closePopup();
-        // Clear the feedback textarea
-        feedbackTextarea.value = '';
-    }
-} 
-
-
     </script>
 
 </body>
