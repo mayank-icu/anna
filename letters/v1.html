@@ -3,295 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Letter For You ✨</title>
+    <title>Letter For You</title>
     <style>
-
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Caveat', cursive; /* Adding Caveat font */
-}
-
-.background-image {
-    background-image: url('../assets/images/page.jpg'); /* Add your background image path here */
-    background-size: contain; /* Show the full image without cutting it */
-    background-position: center;
-    background-repeat: no-repeat; /* Prevent the background from repeating */
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative; /* Allows for positioning of the date */
-}
-
-.date {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 14px;
-}
-
-
-.popup {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    justify-content: center;
-    align-items: center;
-}
-
-.popup-content {
-    background-color: #fefefe;
-    padding: 20px;
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .letter {
+    background-color: rgba(255, 255, 255, 0.911);
+    color: black;
+    max-width: 600px;
+    width: 90%;
+    padding: 2rem;
+    box-sizing: border-box;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 80%;
+    backdrop-filter: blur(10px);
+    max-height: 650px; /* Adjust this height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+.images {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
 }
 
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
+.images img {
+    width: 48%; /* Adjust width to fit images within the container */
+    border-radius: 5px; /* Optional: add border radius for styling */
 }
-
-textarea {
-    width: 100%;
-    height: 100px;
-    margin-bottom: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.controls {
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .signature {
+            text-align: right;
+            font-style: italic;
+            margin-top: 2rem;
+        }
+        button {
+            background-color: rgb(0, 0, 0);
+            color: rgb(255, 255, 255);
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            display: block;
+            margin-top: 2rem;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        .modal {
+            display: none;
             position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background-color: #fff;
-            border: 1px solid #ccc;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.541);
+            color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-sizing: border-box;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .close {
+            color: white;
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        input, textarea {
+            width: 100%;
             padding: 10px;
+            margin: 10px 0;
+            background-color: rgb(255, 255, 255);
+            border: none;
+            color: black; /* Changed text color to black */
+            box-sizing: border-box;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: none; /* Initially hide the controls */
         }
-        audio {
-            display: none; /* Hide the audio element */
-        }
-
-        .reply-button-container {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .reply-button {
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .reply-button:hover {
-        background-color: #45a049;
-    }
-
-    .reply-form-popup {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.4);
-        padding-top: 60px;
-    }
-
-    .reply-form-content {
-        background-color: white;
-        margin: 5% auto;
-        padding: 20px;
-        position: relative;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        animation: slideIn 0.3s;
-    }
-
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .reply-form-content h2 {
-        margin-top: 0;
-    }
-
-    .reply-form-content label {
-        display: block;
-        margin: 10px 0 5px;
-    }
-
-    .reply-form-content input[type="text"],
-    .reply-form-content input[type="email"],
-    .reply-form-content textarea {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
-
-    .reply-form-content button[type="submit"] {
-        width: 100%;
-        padding: 10px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .reply-form-content button[type="submit"]:hover {
-        background-color: #45a049;
-    }
-
-    @keyframes slideIn {
-        from {transform: translateY(-50px); opacity: 0;}
-        to {transform: translateY(0); opacity: 1;}
-    }
     </style>
+    
 </head>
 <body>
-  
-
-    <div class="background-image">
-                <span class="date" class="date-container" id="date-container"></span>
+    <div class="letter">
+        <p>Dear Melissa,</p>
+        <p> I get how hard this must be for you, especially seeing your little sister blaming herself. <br> She’s still so young, and it’s natural for her to think that way, even though it’s not her fault. <br> It’s sad, but with time, she’ll grow to understand that things like “favorites” don’t really define how much love there is. Just keep being there for her, like you already are. It’s clear you care about her a lot, and she’s lucky to have you around. It’s tough now, but you’re handling it in the best way you can. Take it one day at a time, and I’m sure things will work out.
+ </p>
+        <div class="images">
+        <img src="https://i.ibb.co/dJRrnLC/Supermoon-Nov-14-2016-minneapolis.jpg" alt="Image 1">
+        <img src="https://i.ibb.co/M9TfQ3b/Full-Moon2010.jpg" alt="Image 2">
+    </div>
+    <p class="signature">Take Care, Mayank</p>
+    <button onclick="openModal()">Reply</button>
     </div>
 
-    <audio id="background-audio" src="../assets/audios/greedy.mp3" loop></audio>
-    <div class="controls" id="controls">
-        <p>Click to enable audio</p>
-        <button onclick="enableAudio()">Play Audio</button>
+    <div id="replyModal" class="modal">
+        <div class="modal-content">
+            <form id="wishForm">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <input type="text" placeholder="Your wish" name="wish" required>
+                <textarea placeholder="Your message" rows="4" name="message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+            <p id="confirmationMessage" style="display:none; color: green; margin-top: 10px;">
+                Your wish has been sent successfully!
+            </p>
+        </div>
     </div>
-
-
-    <!-- Reply Button -->
-<div class="reply-button-container">
-    <button class="reply-button" onclick="openReplyForm()">Reply</button>
-</div>
-
-<!-- Reply Form Popup -->
-<div id="replyFormPopup" class="reply-form-popup">
-    <div class="reply-form-content">
-        <span class="close" onclick="closeReplyForm()">&times;</span>
-        <h2>Reply</h2>
-        <form action="https://formspree.io/f/mjvqobge" method="POST" onsubmit="showConfirmation(event)">
-            <label for="message">Your Message:</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-            <button type="submit">Send</button>
-        </form>
-        <p id="confirmationMessage" style="display:none;">Your message has been sent.</p>
+    
+    <div id="replyModal" class="modal">
+        <div class="modal-content">
+            <form id="wishForm">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <input type="text" placeholder="Your wish" name="wish" required>
+                <textarea placeholder="Your message" rows="4" name="message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+            <p id="confirmationMessage" style="display:none; color: green; margin-top: 10px;">
+                Your wish has been sent successfully!
+            </p>
+        </div>
     </div>
-</div>
-
-<!-- JavaScript for Reply Form -->
- 
-<script>
-    function openReplyForm() {
-        document.getElementById('replyFormPopup').style.display = 'block';
-    }
-
-    function closeReplyForm() {
-        document.getElementById('replyFormPopup').style.display = 'none';
-    }
-
-    document.getElementById('replyForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the form from submitting the traditional way
-        var form = event.target;
-        var formData = new FormData(form);
-
-        fetch('https://formspree.io/f/mjvqobge', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).then(function(response) {
-            if (response.ok) {
-                document.getElementById('confirmationMessage').textContent = 'Your message has been sent.';
-            } else {
-                document.getElementById('confirmationMessage').textContent = 'There was a problem sending your message. Please try again.';
-            }
-            document.getElementById('confirmationMessage').style.display = 'block';
-            form.style.display = 'none';
-        }).catch(function(error) {
-            document.getElementById('confirmationMessage').textContent = 'There was an error sending your message. Please try again.';
-            document.getElementById('confirmationMessage').style.display = 'block';
-        });
-    });
-</script>
-
-
-
+    
     <script>
-
-document.addEventListener('DOMContentLoaded', () => {
-            const dateContainer = document.getElementById('date-container');
-            const currentDate = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = currentDate.toLocaleDateString('en-US', options);
-            dateContainer.textContent = formattedDate;
-        });
-
-const audio = document.getElementById('background-audio');
-        const controls = document.getElementById('controls');
-
-        function enableAudio() {
-            audio.play().then(() => {
-                controls.style.display = 'none'; // Hide the controls once audio plays
-            }).catch(e => {
-                console.log('Playback failed:', e);
-            });
+        function openModal() {
+            document.getElementById("replyModal").style.display = "block";
         }
-
-        window.addEventListener('load', () => {
-            audio.play().catch(e => {
-                console.log('Autoplay was prevented:', e);
-                controls.style.display = 'block'; // Show the controls if autoplay is prevented
+        function closeModal() {
+            document.getElementById("replyModal").style.display = "none";
+        }
+        
+        document.getElementById("wishForm").addEventListener("submit", function(event){
+            event.preventDefault(); // Prevent the default form submission
+            
+            const formData = new FormData(event.target); // Create a FormData object from the form
+    
+            // Send the form data using fetch
+            fetch("https://formspree.io/f/mjvqobge", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json"
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // Show confirmation message
+                    document.getElementById("confirmationMessage").style.display = "block";
+                    
+                    // Hide the form after submission
+                    document.getElementById("wishForm").style.display = "none";
+                } else {
+                    alert("There was a problem submitting your form.");
+                }
+            }).catch(error => {
+                alert("There was an error submitting your form: " + error.message);
             });
         });
     </script>
-
+    
+    
 </body>
 </html>
