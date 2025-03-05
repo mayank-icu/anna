@@ -1,1 +1,85 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Crimson+Text:wght@400;600&display=swap');
+
+body {
+    background-color: #f8e8e8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.letter-container {
+    background: #fff9f5;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    max-width: 650px;
+    width: 100%;
+    border: 2px solid #e6b0a3;
+    position: relative;
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    color: #b35c5c;
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+p {
+    font-family: 'Crimson Text', serif;
+    color: #5a3e36;
+    line-height: 1.8;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+ul {
+    font-family: 'Crimson Text', serif;
+    color: #5a3e36;
+    font-size: 17px;
+    padding-left: 20px;
+}
+
+ul li {
+    margin-bottom: 8px;
+}
+
+.signature {
+    font-family: 'Dancing Script', cursive;
+    font-size: 24px;
+    color: #b35c5c;
+    text-align: right;
+    margin-top: 20px;
+}
+
+.ps {
+    margin-top: 30px;
+    font-style: italic;
+    color: #8c4f4f;
+    font-size: 16px;
+    text-align: center;
+}
+
+.stamp {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 70px;
+    height: 70px;
+}
+
+.heart-divider {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.heart-divider::after {
+    content: "♥ ♥ ♥";
+    font-size: 18px;
+    color: #b35c5c;
+    letter-spacing: 8px;
+}
