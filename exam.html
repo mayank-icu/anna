@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You 🌸</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+            font-family: 'Dancing Script', cursive;
+            min-height: 100vh;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            padding: 20px;
+            text-align: center;
+            color: #7a2a4e;
+        }
+
+        .heart {
+            color: #ff2768;
+            font-size: 50px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        p {
+            font-size: 1.5em;
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .falling-heart {
+            position: absolute;
+            font-size: 24px;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .music-player:hover {
+            transform: scale(1.1);
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .gallery img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2em; }
+            p { font-size: 1.2em; }
+            .gallery img { width: 100px; height: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container" id="hearts"></div>
+
+    <div class="container">
+        <div class="message-box">
+            <h1>For You Hannah 💕</h1>
+            <div class="heart">♥</div>
+            <p>Dear Hannah, I know how hard you've been studying for your math exam, and I just want to remind you how amazing you are! 🌸</p>
+            <p>You're more than ready for this, and I believe in you with all my heart! You got this! 💪✨</p>
+            <p>No matter what, always remember you're special and so loved 💖</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Study Motivation 📚</h1>
+        <div class="gallery">
+            <img src="https://i.ibb.co/kVHCzRNv/cr-chibird.jpg" alt="Study 1">
+            <img src="https://i.ibb.co/Hf3p8jRS/c157b62a-956c-49b5-8aa7-22923ebcacbe.jpg" alt="Study 2">
+        </div>
+    </div>
+
+    <div class="music-player" onclick="toggleMusic()">🎵</div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://hannahhh.netlify.app/assets/audios/song2.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const music = document.getElementById('bgMusic');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            isPlaying ? music.pause() : music.play();
+            isPlaying = !isPlaying;
+            createHearts(5);
+        }
+
+        function createHearts(count) {
+            const container = document.getElementById('hearts');
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'falling-heart';
+                heart.innerHTML = '♥';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+                heart.style.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 5000);
+            }
+        }
+    </script>
+</body>
+</html>
