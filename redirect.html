@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown to the Special Day</title>
+  <style>
+    /* Global Resets */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffe6f0, #fff0f5);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Glassmorphism Container */
+    .container {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      color: #5a2d56;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 1s ease-out;
+      z-index: 10;
+      position: relative;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+    .countdown {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      padding: 15px;
+      background: rgba(255, 182, 193, 0.3);
+      border-radius: 10px;
+      display: inline-block;
+      min-width: 250px;
+      animation: pulse 2s infinite;
+      transition: background 0.5s ease;
+    }
+    /* Button Styling */
+    .btn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(90deg, #ffb3c1, #ffccd5);
+      color: #5a2d56;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin: 10px;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    /* Progress Bar */
+    .progress-container {
+      background: rgba(255, 182, 193, 0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      height: 20px;
+      margin: 20px 0;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ffb3c1, #ffccd5);
+      border-radius: 10px;
+      transition: width 0.5s ease-out;
+      animation: gradientShift 3s ease infinite;
+    }
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    @keyframes gradientShift {
+      0% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(20deg); }
+      100% { filter: hue-rotate(0deg); }
+    }
+    /* Floating Hearts and Petals */
+    .heart, .petal {
+      position: absolute;
+      bottom: -50px;
+      font-size: 24px;
+      user-select: none;
+    }
+    .heart {
+      color: #ff69b4;
+      animation: floatUp 6s linear infinite;
+    }
+    .petal {
+      color: #ffb6c1;
+      animation: floatUpPetal 8s linear infinite;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateX(0) translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(100px) translateY(-800px) scale(0.5);
+        opacity: 0;
+      }
+    }
+    @keyframes floatUpPetal {
+      0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-100px) translateY(-800px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      top: -10px;
+      width: 8px;
+      height: 16px;
+      opacity: 0.8;
+      transform: rotate(45deg);
+      animation: fall 5s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      0% {
+        transform: translateY(-10px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    /* Modal for Friend Note */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 20;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: rgba(0, 0, 0, 0.6);
+      animation: fadeIn 0.5s;
+    }
+    .modal-content {
+      background: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 500px;
+      text-align: left;
+      color: #5a2d56;
+      position: relative;
+      animation: slideIn 0.5s;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: #aaa;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Typewriter Effect */
+    .typewriter {
+      overflow: hidden;
+      border-right: .15em solid #5a2d56;
+      white-space: nowrap;
+      margin: 20px auto;
+      letter-spacing: .15em;
+      animation: typing 4s steps(30, end), blink-caret .75s step-end infinite;
+      font-size: 1.2rem;
+      max-width: 90%;
+      text-align: left;
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #5a2d56; }
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 1.5rem; }
+      p, .countdown { font-size: 0.9rem; }
+      .btn { font-size: 0.9rem; padding: 8px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Confetti Container -->
+  <div id="confetti-container"></div>
+  <!-- Floating Hearts and Petals -->
+  <div id="floating-container"></div>
+  
+  <div class="container">
+    <h1>Countdown to the Special Day</h1>
+    <p>This page marks a memorable upcoming event. The countdown below shows the time remaining until the day arrives. You can also set a reminder or read a friendly note to brighten your day.</p>
+    <div class="countdown" id="countdown">Loading countdown...</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <button class="btn" id="remindBtn">Remind Me</button>
+    <button class="btn" id="friendNoteBtn">Friend Note</button>
+    <div class="typewriter" id="typewriter"></div>
+  </div>
+  
+  <!-- Friend Note Modal -->
+  <div id="friendModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h2>A Special Message</h2>
+      <p>
+        Dear Friend,<br><br>
+        I value the moments we share and the support you offer. This countdown is a reminder of the wonderful times ahead. Thank you for being an incredible friend and for adding so much meaning to our days.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Background Audio -->
+  <audio id="waitingAudio" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  
+  <script>
+    // Attempt to autoplay background audio
+    const audio = document.getElementById('waitingAudio');
+    audio.volume = 0.2;
+    audio.play().catch(e => {
+      console.log("Auto-play failed; user interaction may be required.", e);
+    });
+    
+    // Redirect URL (Base64-obfuscated)
+    const redirectUrl = atob("aHR0cHM6Ly9iZHl5LXdpc2gubmV0bGlmeS5hcHAvYmlydGhkYXkvLU9MMzAwMjZCUkFPTnRaVkcwc2E=");
+    // Event date: April 10, 2025, 00:00:00 UTC (Poland Time)
+    const eventDate = new Date(Date.UTC(2025, 3, 10, 0, 0, 0));
+    // Start date for progress bar (January 1, 2025)
+    const startDate = new Date(Date.UTC(2025, 0, 1, 0, 0, 0));
+    let timeOffset = 0;
+    
+    // Fetch server time from worldtimeapi.org (Europe/Warsaw)
+    async function fetchServerTime() {
+      try {
+        const response = await fetch("https://worldtimeapi.org/api/timezone/Europe/Warsaw");
+        const data = await response.json();
+        const serverTime = new Date(data.utc_datetime);
+        timeOffset = serverTime.getTime() - Date.now();
+      } catch (e) {
+        console.error("Error fetching server time, using local time.", e);
+        timeOffset = 0;
+      }
+    }
+    
+    // Update countdown and progress bar
+    function updateCountdown() {
+      const now = new Date(Date.now() + timeOffset);
+      const timeDiff = eventDate - now;
+      if (timeDiff <= 0) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+      document.getElementById("countdown").textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+      
+      // Update progress bar width
+      const totalDuration = eventDate - startDate;
+      const elapsed = now - startDate;
+      let progressPercent = (elapsed / totalDuration) * 100;
+      progressPercent = Math.min(Math.max(progressPercent, 0), 100);
+      document.getElementById("progress-bar").style.width = progressPercent + "%";
+    }
+    
+    async function initCountdown() {
+      await fetchServerTime();
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+      setInterval(fetchServerTime, 60000);
+    }
+    initCountdown();
+    
+    // "Remind Me" button: generate and download ICS calendar event
+    document.getElementById('remindBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      try {
+        const nowUTC = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        const icsContent = [
+          "BEGIN:VCALENDAR",
+          "VERSION:2.0",
+          "BEGIN:VEVENT",
+          "DTSTAMP:" + nowUTC,
+          "UID:" + Date.now() + "@specialday",
+          "DTSTART:20250410T000000Z",
+          "DTEND:20250410T010000Z",
+          "SUMMARY:Special Day Reminder",
+          "DESCRIPTION:Remember the upcoming special day for our friendship celebration.",
+          "END:VEVENT",
+          "END:VCALENDAR"
+        ].join("\r\n");
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'SpecialDayReminder.ics';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Error generating calendar event:", error);
+      }
+    });
+    
+    // "Friend Note" Modal functionality
+    const friendNoteBtn = document.getElementById('friendNoteBtn');
+    const friendModal = document.getElementById('friendModal');
+    const closeModal = document.getElementById('closeModal');
+    
+    friendNoteBtn.addEventListener('click', function() {
+      friendModal.style.display = 'block';
+    });
+    closeModal.addEventListener('click', function() {
+      friendModal.style.display = 'none';
+    });
+    window.addEventListener('click', function(event) {
+      if (event.target === friendModal) {
+        friendModal.style.display = 'none';
+      }
+    });
+    
+    // Floating Hearts and Petals
+    function createFloatingElement(className, content, durationMin, durationMax) {
+      const el = document.createElement('div');
+      el.className = className;
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (durationMin + Math.random() * (durationMax - durationMin)) + 's';
+      el.innerHTML = content;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), (durationMax * 1000));
+    }
+    setInterval(() => createFloatingElement('heart', '❤️', 4, 8), 1500);
+    setInterval(() => createFloatingElement('petal', '🌸', 6, 10), 2000);
+    
+    // Confetti Animation
+    function createConfetti() {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.backgroundColor = "hsl(" + Math.random()*360 + ", 70%, 80%)";
+      document.getElementById('confetti-container').appendChild(confetti);
+      setTimeout(() => confetti.remove(), 5000);
+    }
+    setInterval(createConfetti, 300);
+    
+    // Typewriter Effect for a friendly message
+    const message = "I appreciate our friendship and look forward to celebrating this special day together. Stay excited and keep smiling!";
+    let charIndex = 0;
+    function typeWriter() {
+      if (charIndex < message.length) {
+        document.getElementById("typewriter").textContent += message.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeWriter, 80);
+      }
+    }
+    window.addEventListener("load", typeWriter);
+  </script>
+</body>
+</html>
