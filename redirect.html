@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Countdown to the Special Day</title>
+  <title>Countdown to Your Birthday</title>
   <style>
     /* Global Resets */
     * {
@@ -105,8 +105,8 @@
       50% { filter: hue-rotate(20deg); }
       100% { filter: hue-rotate(0deg); }
     }
-    /* Floating Hearts and Petals */
-    .heart, .petal {
+    /* Floating Hearts, Petals and Balloons */
+    .heart, .petal, .balloon {
       position: absolute;
       bottom: -50px;
       font-size: 24px;
@@ -120,25 +120,21 @@
       color: #ffb6c1;
       animation: floatUpPetal 8s linear infinite;
     }
+    .balloon {
+      font-size: 28px;
+      animation: floatUpBalloon 7s linear infinite;
+    }
     @keyframes floatUp {
-      0% {
-        transform: translateX(0) translateY(0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateX(100px) translateY(-800px) scale(0.5);
-        opacity: 0;
-      }
+      0% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateX(100px) translateY(-800px) scale(0.5); opacity: 0; }
     }
     @keyframes floatUpPetal {
-      0% {
-        transform: translateX(0) translateY(0) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateX(-100px) translateY(-800px) rotate(360deg);
-        opacity: 0;
-      }
+      0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateX(-100px) translateY(-800px) rotate(360deg); opacity: 0; }
+    }
+    @keyframes floatUpBalloon {
+      0% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateX(20px) translateY(-800px) scale(1); opacity: 0; }
     }
     /* Confetti */
     .confetti {
@@ -152,16 +148,10 @@
       pointer-events: none;
     }
     @keyframes fall {
-      0% {
-        transform: translateY(-10px) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(110vh) rotate(360deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
     }
-    /* Modal for Friend Note */
+    /* Modal Styling */
     .modal {
       display: none;
       position: fixed;
@@ -206,7 +196,6 @@
       white-space: nowrap;
       margin: 20px auto;
       letter-spacing: .15em;
-      animation: typing 4s steps(30, end), blink-caret .75s step-end infinite;
       font-size: 1.2rem;
       max-width: 90%;
       text-align: left;
@@ -219,6 +208,66 @@
       from, to { border-color: transparent; }
       50% { border-color: #5a2d56; }
     }
+    /* Calendar Styling */
+    .calendar {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      animation: fadeIn 0.5s;
+    }
+    .calendar th, .calendar td {
+      border: 1px solid #ddd;
+      padding: 5px;
+      text-align: center;
+    }
+    .calendar td {
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .calendar td:hover:not(.disabled) {
+      background: #ffccd5;
+    }
+    .calendar td.disabled {
+      color: #aaa;
+      cursor: default;
+    }
+    /* Minigame (Balloon Pop Game) Styling */
+    #gameContainer {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background: #fff;
+      border: 2px dashed #ffb3c1;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .game-balloon {
+      position: absolute;
+      font-size: 32px;
+      animation: balloonFloat 4s linear forwards;
+      cursor: pointer;
+    }
+    @keyframes balloonFloat {
+      from { bottom: 0; opacity: 1; }
+      to { bottom: 100%; opacity: 0; }
+    }
+    .game-balloon.pop {
+      animation: popEffect 0.5s forwards;
+    }
+    @keyframes popEffect {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(0); opacity: 0; }
+    }
+    .game-result {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #5a2d56;
+      animation: fadeIn 1s forwards;
+    }
     @media (max-width: 480px) {
       h1 { font-size: 1.5rem; }
       p, .countdown { font-size: 0.9rem; }
@@ -229,41 +278,74 @@
 <body>
   <!-- Confetti Container -->
   <div id="confetti-container"></div>
-  <!-- Floating Hearts and Petals -->
+  <!-- Floating Elements Container -->
   <div id="floating-container"></div>
   
   <div class="container">
-    <h1>Countdown to the Special Day</h1>
-    <p>This page marks a memorable upcoming event. The countdown below shows the time remaining until the day arrives. You can also set a reminder or read a friendly note to brighten your day.</p>
+    <h1>Countdown to Your Birthday</h1>
+    <p>I am eagerly waiting for my birthday. Enjoy daily surprises, open gifts, and play fun games to keep the excitement alive throughout the month. This page will redirect you to somewhere else when the countdown is over. </p>
     <div class="countdown" id="countdown">Loading countdown...</div>
     <div class="progress-container">
       <div class="progress-bar" id="progress-bar"></div>
     </div>
     <button class="btn" id="remindBtn">Remind Me</button>
-    <button class="btn" id="friendNoteBtn">Friend Note</button>
+    <button class="btn" id="birthdayNoteBtn">Birthday Note</button>
+    <button class="btn" id="surpriseBtn">Daily Surprise</button>
+    <button class="btn" id="giftBtn">Open Gift</button>
+    <button class="btn" id="gameBtn">Play Game</button>
     <div class="typewriter" id="typewriter"></div>
   </div>
   
-  <!-- Friend Note Modal -->
-  <div id="friendModal" class="modal">
+  <!-- Birthday Note Modal -->
+  <div id="birthdayModal" class="modal">
     <div class="modal-content">
-      <span class="close" id="closeModal">&times;</span>
-      <h2>A Special Message</h2>
+      <span class="close" id="closeBirthday">&times;</span>
+      <h2>A Special Birthday Message</h2>
       <p>
-        Dear Friend,<br><br>
-        I value the moments we share and the support you offer. This countdown is a reminder of the wonderful times ahead. Thank you for being an incredible friend and for adding so much meaning to our days.
+        Dear Hannah,<br><br>
+        Your birthday is almost here, may your day be filled with joy and laughter, and may this countdown remind you of the wonderful times ahead.
       </p>
+    </div>
+  </div>
+  
+  <!-- Daily Surprise Modal -->
+  <div id="surpriseModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeSurprise">&times;</span>
+      <h2>Your Daily Surprise</h2>
+      <div id="surpriseCalendar"></div>
+      <div id="surpriseMessage" style="margin-top:10px; font-size:1rem;"></div>
+    </div>
+  </div>
+  
+  <!-- Gift Modal -->
+  <div id="giftModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeGift">&times;</span>
+      <h2>Your Gift</h2>
+      <div id="giftCalendar"></div>
+      <div id="giftMessage" style="margin-top:10px; font-size:1rem;"></div>
+    </div>
+  </div>
+  
+  <!-- Game Modal -->
+  <div id="gameModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeGame">&times;</span>
+      <h2>Balloon Pop Game</h2>
+      <div id="gameContainer"></div>
+      <button class="btn" id="startGameBtn">Start Game</button>
     </div>
   </div>
   
   <!-- Background Audio -->
   <audio id="waitingAudio" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <source src="./assets/audios/ta.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
   
   <script>
-    // Attempt to autoplay background audio
+    // Background audio autoplay
     const audio = document.getElementById('waitingAudio');
     audio.volume = 0.2;
     audio.play().catch(e => {
@@ -272,13 +354,13 @@
     
     // Redirect URL (Base64-obfuscated)
     const redirectUrl = atob("aHR0cHM6Ly9iZHl5LXdpc2gubmV0bGlmeS5hcHAvYmlydGhkYXkvLU9MMzAwMjZCUkFPTnRaVkcwc2E=");
-    // Event date: April 10, 2025, 00:00:00 UTC (Poland Time)
+    // Set birthday event date (April 10, 2025, 00:00:00 UTC)
     const eventDate = new Date(Date.UTC(2025, 3, 10, 0, 0, 0));
     // Start date for progress bar (January 1, 2025)
     const startDate = new Date(Date.UTC(2025, 0, 1, 0, 0, 0));
     let timeOffset = 0;
     
-    // Fetch server time from worldtimeapi.org (Europe/Warsaw)
+    // Fetch server time
     async function fetchServerTime() {
       try {
         const response = await fetch("https://worldtimeapi.org/api/timezone/Europe/Warsaw");
@@ -305,7 +387,7 @@
       const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
       document.getElementById("countdown").textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
       
-      // Update progress bar width
+      // Update progress bar
       const totalDuration = eventDate - startDate;
       const elapsed = now - startDate;
       let progressPercent = (elapsed / totalDuration) * 100;
@@ -321,7 +403,7 @@
     }
     initCountdown();
     
-    // "Remind Me" button: generate and download ICS calendar event
+    // "Remind Me" button: generate and download ICS event
     document.getElementById('remindBtn').addEventListener('click', function(e) {
       e.preventDefault();
       try {
@@ -331,11 +413,11 @@
           "VERSION:2.0",
           "BEGIN:VEVENT",
           "DTSTAMP:" + nowUTC,
-          "UID:" + Date.now() + "@specialday",
+          "UID:" + Date.now() + "@birthday",
           "DTSTART:20250410T000000Z",
           "DTEND:20250410T010000Z",
-          "SUMMARY:Special Day Reminder",
-          "DESCRIPTION:Remember the upcoming special day for our friendship celebration.",
+          "SUMMARY:Your Birthday Reminder",
+          "DESCRIPTION:Don't forget your upcoming birthday celebration.",
           "END:VEVENT",
           "END:VCALENDAR"
         ].join("\r\n");
@@ -343,7 +425,7 @@
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'SpecialDayReminder.ics';
+        link.download = 'BirthdayReminder.ics';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -353,24 +435,235 @@
       }
     });
     
-    // "Friend Note" Modal functionality
-    const friendNoteBtn = document.getElementById('friendNoteBtn');
-    const friendModal = document.getElementById('friendModal');
-    const closeModal = document.getElementById('closeModal');
-    
-    friendNoteBtn.addEventListener('click', function() {
-      friendModal.style.display = 'block';
+    // Modal functionality for Birthday Note
+    const birthdayNoteBtn = document.getElementById('birthdayNoteBtn');
+    const birthdayModal = document.getElementById('birthdayModal');
+    const closeBirthday = document.getElementById('closeBirthday');
+    birthdayNoteBtn.addEventListener('click', function() {
+      birthdayModal.style.display = 'block';
     });
-    closeModal.addEventListener('click', function() {
-      friendModal.style.display = 'none';
+    closeBirthday.addEventListener('click', function() {
+      birthdayModal.style.display = 'none';
     });
     window.addEventListener('click', function(event) {
-      if (event.target === friendModal) {
-        friendModal.style.display = 'none';
+      if (event.target === birthdayModal) {
+        birthdayModal.style.display = 'none';
       }
     });
     
-    // Floating Hearts and Petals
+    // Daily Surprise Modal functionality with calendar
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const surpriseModal = document.getElementById('surpriseModal');
+    const closeSurprise = document.getElementById('closeSurprise');
+    surpriseBtn.addEventListener('click', function() {
+      surpriseModal.style.display = 'block';
+      generateCalendar("surpriseCalendar", "surprise");
+      document.getElementById("surpriseMessage").textContent = "Click on a past date to see your animated surprise.";
+    });
+    closeSurprise.addEventListener('click', function() {
+      surpriseModal.style.display = 'none';
+    });
+    window.addEventListener('click', function(event) {
+      if (event.target === surpriseModal) {
+        surpriseModal.style.display = 'none';
+      }
+    });
+    
+    // Gift Modal functionality with calendar
+    const giftBtn = document.getElementById('giftBtn');
+    const giftModal = document.getElementById('giftModal');
+    const closeGift = document.getElementById('closeGift');
+    giftBtn.addEventListener('click', function() {
+      giftModal.style.display = 'block';
+      generateCalendar("giftCalendar", "gift");
+      document.getElementById("giftMessage").textContent = "Click on a past date to open your animated gift.";
+    });
+    closeGift.addEventListener('click', function() {
+      giftModal.style.display = 'none';
+    });
+    window.addEventListener('click', function(event) {
+      if (event.target === giftModal) {
+        giftModal.style.display = 'none';
+      }
+    });
+    
+    // Game Modal functionality
+    const gameBtn = document.getElementById('gameBtn');
+    const gameModal = document.getElementById('gameModal');
+    const closeGame = document.getElementById('closeGame');
+    gameBtn.addEventListener('click', function() {
+      gameModal.style.display = 'block';
+    });
+    closeGame.addEventListener('click', function() {
+      gameModal.style.display = 'none';
+    });
+    window.addEventListener('click', function(event) {
+      if (event.target === gameModal) {
+        gameModal.style.display = 'none';
+      }
+    });
+    
+    // Calendar generation function for Surprise and Gift modals
+    function generateCalendar(containerId, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth();
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const table = document.createElement("table");
+      table.className = "calendar";
+      const headerRow = document.createElement("tr");
+      const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      daysOfWeek.forEach(day => {
+        const th = document.createElement("th");
+        th.textContent = day;
+        headerRow.appendChild(th);
+      });
+      table.appendChild(headerRow);
+      let row = document.createElement("tr");
+      for (let i = 0; i < firstDay; i++) {
+        const cell = document.createElement("td");
+        cell.textContent = "";
+        row.appendChild(cell);
+      }
+      for (let date = 1; date <= daysInMonth; date++) {
+        if (row.children.length % 7 === 0) {
+          table.appendChild(row);
+          row = document.createElement("tr");
+        }
+        const cell = document.createElement("td");
+        cell.textContent = date;
+        let cellDate = new Date(currentYear, currentMonth, date);
+        if (cellDate > today) {
+          cell.classList.add("disabled");
+        } else {
+          cell.addEventListener("click", function() {
+            if (type === "surprise") {
+              showSurpriseForDate(date);
+            } else if (type === "gift") {
+              showGiftForDate(date);
+            }
+          });
+        }
+        row.appendChild(cell);
+      }
+      while (row.children.length < 7) {
+        const cell = document.createElement("td");
+        cell.textContent = "";
+        row.appendChild(cell);
+      }
+      table.appendChild(row);
+      container.appendChild(table);
+    }
+    
+    function showSurpriseForDate(date) {
+      const index = (date - 1) % surpriseMessages.length;
+      const message = surpriseMessages[index];
+      // Animate the message appearance
+      const msgElem = document.getElementById("surpriseMessage");
+      msgElem.style.opacity = 0;
+      msgElem.textContent = "Surprise for day " + date + ": " + message;
+      setTimeout(() => { msgElem.style.opacity = 1; }, 100);
+    }
+    
+    function showGiftForDate(date) {
+      const index = (date - 1) % giftMessages.length;
+      const message = giftMessages[index];
+      const msgElem = document.getElementById("giftMessage");
+      msgElem.style.opacity = 0;
+      msgElem.textContent = "Gift for day " + date + ": " + message;
+      setTimeout(() => { msgElem.style.opacity = 1; }, 100);
+    }
+    
+    // Surprise and Gift messages arrays (more animated and fun messages)
+    const surpriseMessages = [
+      "Believe in your dreams! ✨",
+      "Keep smiling, you are amazing! 😊",
+      "Today is a great day to be you! 🌟",
+      "Embrace the joy of life! 💖",
+      "You are stronger than you think! 💪",
+      "Your smile brightens the day! 😄",
+      "Cherish every moment! 🌈",
+      "A new surprise awaits you! 🎉",
+      "Enjoy every little moment! 🍀",
+      "You make the world brighter! 🌞"
+    ];
+    
+    const giftMessages = [
+      "A gift of love and happiness! 🎁",
+      "May this gift brighten your day! 💝",
+      "Unwrap your joy and share it with the world! 🌹",
+      "This gift is a token of admiration! 💌",
+      "A small gift for a big heart! ❤️",
+      "May your day be filled with pleasant surprises! 🎊",
+      "A gift of endless smiles! 😃",
+      "Open your heart to new adventures! 🚀",
+      "A present to remind you of your worth! 🌟",
+      "May this gift bring you peace and joy! 🤗"
+    ];
+    
+    // Typewriter Effect for the main message
+    function typeWriter() {
+      const element = document.getElementById("typewriter");
+      const text = "I am eagerly waiting for my birthday.";
+      element.textContent = "";
+      let i = 0;
+      function typing() {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(typing, 80);
+        }
+      }
+      typing();
+    }
+    window.addEventListener("DOMContentLoaded", typeWriter);
+    
+    // Balloon Pop Game (Minigame)
+    function startGame() {
+      const gameContainer = document.getElementById("gameContainer");
+      gameContainer.innerHTML = "";
+      let poppedCount = 0;
+      // Function to spawn a balloon
+      function spawnBalloon() {
+        const balloon = document.createElement("div");
+        balloon.className = "game-balloon";
+        balloon.textContent = "🎈";
+        // Set random horizontal position
+        const left = Math.random() * (gameContainer.offsetWidth - 50);
+        balloon.style.left = left + "px";
+        balloon.style.bottom = "0px";
+        gameContainer.appendChild(balloon);
+        // When clicked, pop the balloon
+        balloon.addEventListener("click", function() {
+          balloon.classList.add("pop");
+          poppedCount++;
+          setTimeout(() => { balloon.remove(); }, 500);
+        });
+        // Remove balloon after 5 seconds if not popped
+        setTimeout(() => {
+          if (gameContainer.contains(balloon)) {
+            balloon.remove();
+          }
+        }, 5000);
+      }
+      // Spawn balloons every second for 15 seconds
+      let interval = setInterval(spawnBalloon, 1000);
+      setTimeout(() => {
+        clearInterval(interval);
+        const result = document.createElement("div");
+        result.className = "game-result";
+        result.textContent = "You popped " + poppedCount + " balloons!";
+        gameContainer.appendChild(result);
+      }, 15000);
+    }
+    
+    // Game Modal event listener for starting the game
+    document.getElementById("startGameBtn").addEventListener("click", startGame);
+    
+    // Floating elements (hearts, petals, balloons) and Confetti
     function createFloatingElement(className, content, durationMin, durationMax) {
       const el = document.createElement('div');
       el.className = className;
@@ -382,29 +675,18 @@
     }
     setInterval(() => createFloatingElement('heart', '❤️', 4, 8), 1500);
     setInterval(() => createFloatingElement('petal', '🌸', 6, 10), 2000);
+    setInterval(() => createFloatingElement('balloon', '🎈', 5, 9), 2500);
     
-    // Confetti Animation
     function createConfetti() {
       const confetti = document.createElement('div');
       confetti.className = 'confetti';
       confetti.style.left = Math.random() * 100 + 'vw';
-      confetti.style.backgroundColor = "hsl(" + Math.random()*360 + ", 70%, 80%)";
+      confetti.style.backgroundColor = "hsl(" + Math.random() * 360 + ", 70%, 80%)";
       document.getElementById('confetti-container').appendChild(confetti);
       setTimeout(() => confetti.remove(), 5000);
     }
     setInterval(createConfetti, 300);
     
-    // Typewriter Effect for a friendly message
-    const message = "I appreciate our friendship and look forward to celebrating this special day together. Stay excited and keep smiling!";
-    let charIndex = 0;
-    function typeWriter() {
-      if (charIndex < message.length) {
-        document.getElementById("typewriter").textContent += message.charAt(charIndex);
-        charIndex++;
-        setTimeout(typeWriter, 80);
-      }
-    }
-    window.addEventListener("load", typeWriter);
   </script>
 </body>
 </html>
