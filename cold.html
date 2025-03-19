@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hannah's Immune Challenge</title>
+  <style>
+    :root {
+      --virus: #ff4757;
+      --medicine: #2ed573;
+      --bg: #f8f9fa;
+      --blood: rgba(255, 0, 0, 0.15);
+    }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: 'Helvetica Neue', sans-serif;
+      height: 100vh;
+      position: relative;
+      touch-action: manipulation;
+    }
+    .score-board {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 24px;
+      border-radius: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      text-align: center;
+      font-weight: 500;
+      min-width: 160px;
+      z-index: 1000;
+    }
+    .game-container {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .entity {
+      position: absolute;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+      z-index: 3;
+    }
+    .blood-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--blood);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      mix-blend-mode: multiply;
+      z-index: 1;
+      animation: pulsate 2s infinite;
+    }
+    .message-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.98);
+      padding: 2.5rem;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      max-width: 320px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      z-index: 2000;
+      display: none;
+    }
+    button {
+      background: var(--medicine);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 24px;
+      margin-top: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s ease;
+    }
+    button:hover { transform: scale(1.05); }
+    button:active { transform: scale(0.95); }
+
+    @keyframes pulsate {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes gas-explode {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    @keyframes heal-effect {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-50px) scale(0); opacity: 0; }
+    }
+
+    .particle {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .gas-particle {
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 71, 87, 0.6);
+      border-radius: 50%;
+      animation: gas-explode 0.8s ease-out forwards;
+    }
+
+    .heal-particle {
+      color: var(--medicine);
+      font-size: 1.2rem;
+      animation: heal-effect 0.6s ease-out forwards;
+    }
+
+    .screen-shake {
+      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+      40%, 60% { transform: translate3d(3px, 0, 0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="score-board">
+    <div>HEALTH: <span id="score">10</span>%</div>
+  </div>
+  <div class="blood-overlay" id="bloodOverlay"></div>
+  <div class="game-container"></div>
+  <div class="message-overlay" id="messageOverlay">
+    <h2 id="messageTitle"></h2>
+    <p id="messageText"></p>
+    <button onclick="location.reload()">Try Again?</button>
+  </div>
+  <script>
+    class ImmuneGame {
+      constructor() {
+        this.container = document.querySelector('.game-container');
+        this.scoreElement = document.getElementById('score');
+        this.bloodOverlay = document.getElementById('bloodOverlay');
+        this.messageOverlay = document.getElementById('messageOverlay');
+        this.score = 10;
+        this.gameActive = true;
+        this.difficultyLevel = 1;
+        this.intervals = [];
+        this.init();
+      }
+      
+      init() {
+        this.updateBloodEffect();
+        this.spawnEntities();
+        this.startHealthDecay();
+      }
+      
+      spawnEntities() {
+        const virusInterval = setInterval(() => {
+          this.createEntity('🦠', 'virus', (element) => {
+            this.createGasExplosion(element);
+            this.adjustScore(-15 - this.difficultyLevel);
+            this.difficultyLevel += 0.5;
+          });
+        }, 1000);
+        this.intervals.push(virusInterval);
+        
+        const medicineInterval = setInterval(() => {
+          this.createEntity('💊', 'medicine', (element) => {
+            this.createHealEffect(element);
+            this.adjustScore(10);
+            this.difficultyLevel = Math.max(1, this.difficultyLevel - 0.3);
+          });
+        }, 2500);
+        this.intervals.push(medicineInterval);
+      }
+      
+      createEntity(emoji, type, onEntityClick) {
+        const entity = document.createElement('div');
+        entity.className = `entity ${type}`;
+        entity.textContent = emoji;
+        entity.style.left = `${Math.random() * 85}vw`;
+        entity.style.top = `${Math.random() * 85}vh`;
+        entity.style.fontSize = `${1.5 + this.difficultyLevel * 0.4}rem`;
+        entity.style.color = type === 'virus' ? 'var(--virus)' : 'var(--medicine)';
+        
+        entity.animate([
+          { transform: 'translateY(0) scale(1)' },
+          { transform: 'translateY(-20px) scale(1.1)' },
+          { transform: 'translateY(0) scale(1)' }
+        ], {
+          duration: 1500,
+          iterations: Infinity
+        });
+        
+        entity.addEventListener('click', () => {
+          if (!this.gameActive) return;
+          entity.animate([
+            { transform: 'scale(1)', opacity: 1 },
+            { transform: 'scale(2)', opacity: 0 }
+          ], {
+            duration: 300
+          }).onfinish = () => entity.remove();
+          onEntityClick(entity);
+        });
+        
+        this.container.appendChild(entity);
+        setTimeout(() => {
+          if (entity.parentElement) entity.remove();
+        }, 3000);
+      }
+      
+      createGasExplosion(element) {
+        const rect = element.getBoundingClientRect();
+        for (let i = 0; i < 8; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle gas-particle';
+          particle.style.left = `${rect.left + rect.width/2}px`;
+          particle.style.top = `${rect.top + rect.height/2}px`;
+          document.body.appendChild(particle);
+          setTimeout(() => particle.remove(), 800);
+        }
+      }
+      
+      createHealEffect(element) {
+        const rect = element.getBoundingClientRect();
+        for (let i = 0; i < 4; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle heal-particle';
+          particle.textContent = '+';
+          particle.style.left = `${rect.left + rect.width/2}px`;
+          particle.style.top = `${rect.top + rect.height/2}px`;
+          document.body.appendChild(particle);
+          setTimeout(() => particle.remove(), 600);
+        }
+      }
+      
+      startHealthDecay() {
+        const decayInterval = setInterval(() => {
+          if (this.gameActive) {
+            this.adjustScore(-0.5 - this.difficultyLevel * 0.3);
+          }
+        }, 1000);
+        this.intervals.push(decayInterval);
+      }
+      
+      adjustScore(change) {
+        this.score = Math.min(Math.max(this.score + change, 0), 100);
+        this.scoreElement.textContent = Math.floor(this.score);
+        this.updateBloodEffect();
+        if (this.score <= 0) this.endGame(false);
+        if (this.score >= 100) this.endGame(true);
+        
+        if (change < 0 && this.score < 30) {
+          document.body.classList.add('screen-shake');
+          setTimeout(() => document.body.classList.remove('screen-shake'), 500);
+        }
+      }
+      
+      updateBloodEffect() {
+        const intensity = (100 - this.score) / 100;
+        this.bloodOverlay.style.opacity = Math.pow(intensity, 2);
+        this.bloodOverlay.style.background = `radial-gradient(circle at 50% 50%, 
+          rgba(255, 0, 0, ${0.1 + intensity * 0.3}), 
+          rgba(255, 0, 0, ${0.05 + intensity * 0.2}))`;
+      }
+      
+      endGame(victory) {
+        this.gameActive = false;
+        this.intervals.forEach(interval => clearInterval(interval));
+        const messageTitle = document.getElementById('messageTitle');
+        const messageText = document.getElementById('messageText');
+        if (victory) {
+          messageTitle.textContent = "Get Well Soon, Hannah! 💐";
+          messageText.innerHTML = "You overcame the pathogens! Your recovery plan: 🍵 + 🛌 + 📺";
+        } else {
+          messageTitle.textContent = "Game Over!";
+          messageText.innerHTML = "Hannah's health dropped too low. Better luck next time!";
+        }
+        this.messageOverlay.style.display = 'block';
+        setTimeout(() => this.messageOverlay.style.opacity = 1, 100);
+      }
+    }
+    
+    new ImmuneGame();
+  </script>
+</body>
+</html>
